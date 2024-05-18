@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 // Connect to MongoDB
 mongoose.connect("mongodb+srv://shahbaz_athwal:Shah1906@cluster0.i5ib7ip.mongodb.net/",{dbName:"Cohort"});
 
+
 // Define schemas
 const AdminSchema = new mongoose.Schema({
     // Schema definition here
