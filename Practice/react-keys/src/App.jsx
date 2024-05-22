@@ -1,18 +1,24 @@
-import {useState} from "react"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import './App.css'
 
 function App() {
-return <>
-<CardWrapper></CardWrapper>
-</>
+    const [todos, setTodos] = useState([])
 
+    useEffect(() => {
+        axios.get("https://sum-server.100xdevs.com/todos")
+            .then((response) => {
+                setTodos(response.data.todos)
+            })
+    }, [])
+    return <>
+    {todos.map(todo => <Todo key={todo.id} title={todo.title} description={todo.description}/>)}
+    </>
 }
 
-function CardWrapper({children}) {
-    return <div style={{border: "2px solid black", padding:"20px"}}>
-        {children}
-    </div>
+function Todo({title, description}) {
+    return <>
+    <div>{title} : {description}</div>
+    </>
 }
-
-
-
 export default App
