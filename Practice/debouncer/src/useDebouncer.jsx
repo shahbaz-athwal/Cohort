@@ -1,8 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
  function useDebouncer(inputValue, delay) {
-    useEffect({
+    const [debouncedValue, setDebouncedValue] = useState(inputValue)
+    
+    useEffect(() => {
+        const clear = setTimeout(() => {
+            setDebouncedValue(inputValue)
+        }, delay);
 
-    },[inputValue])
+        return () => {
+            clearTimeout(clear)
+        }
 
+    }, [inputValue])
+
+    return debouncedValue
  }
+
+ export default useDebouncer
