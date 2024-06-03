@@ -1,10 +1,6 @@
 "use strict";
-class Employee {
-    constructor(n, a) {
-        this.name = n;
-        this.age = a;
-    }
-    greet(phrase) {
-        console.log(`${phrase} ${this.name}`);
-    }
-}
+const teamLead = {
+    name: "harkirat",
+    startDate: new Date(),
+    department: "Software developer"
+};
