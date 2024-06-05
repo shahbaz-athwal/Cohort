@@ -1,7 +1,8 @@
-const mongoose = require("mongoose")
+const {mongoose,Schema, model} = require("mongoose")
 const {MONGO_URI} = require("./config")
 
-const userSchema = new mongoose.Schema({
+
+const userSchema = new Schema({
     username: {
         type: String,
         required: true,
@@ -29,7 +30,20 @@ const userSchema = new mongoose.Schema({
 
 })
 
-const User = new mongoose.model("User", userSchema)
+const accountSchema = new Schema({
+    userId: {
+            type: Schema.Types.ObjectId, 
+            ref: "User",
+            required: true
+    },
+    balance: {
+        type: Number,
+        required: true
+    }
+})
+
+const User = new model("User", userSchema)
+const Account = new model("Account", accountSchema)
 
 const dbConnection = async () => {
     await mongoose
@@ -45,5 +59,6 @@ const dbConnection = async () => {
 
 module.exports = {
     User,
+    Account,
     dbConnection
 }
