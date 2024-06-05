@@ -3,6 +3,7 @@ const zod = require("zod");
 const { User } = require("../db");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
+const {isAuthorized} = require("../middleware")
 
 const signupBody = zod.object({
   username: zod.string().email(),
@@ -91,5 +92,54 @@ router.post("/signin", async (req, res) => {
     message: "Error while logging in",
   });
 });
+
+const updateBody = zod.object({
+  password: zod.string().min(8).optional(),
+  firstName: zod.string().optional(),
+  lastName: zod.string().optional()
+})
+
+router.put("/",isAuthorized, async (req, res) => {
+  const success = zod.safeParse(req.body)
+
+  if (!success) {
+    return res.status(411).json({
+      message: "Error while updating",
+    });
+  }
+
+  await User.updateOne({_id: req.userId}, req.body)
+  
+  res.status(200).json({
+    message: "Updated successfully"
+  })
+
+})
+
+
+router.get("/bulk", async (req, res) => {
+  const filter = req.query.filter || "";
+
+  const users = await User.find({
+      $or: [
+              {
+                  firstName: { "$regex": filter }
+              },
+              {
+                  lastName: { "$regex": filter }
+              }
+            ]
+  })
+  res.json({
+        user: users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
+    })
+  
+})
+
 
 module.exports = router;
