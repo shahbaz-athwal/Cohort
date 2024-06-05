@@ -104,7 +104,7 @@ const updateBody = zod.object({
 })
 
 router.put("/",isAuthorized, async (req, res) => {
-  const success = zod.safeParse(req.body)
+  const success = updateBody.safeParse(req.body)
 
   if (!success) {
     return res.status(411).json({

@@ -2,7 +2,7 @@ const express = require("express")
 const { isAuthorized } = require("../middleware")
 const { Account } = require("../db")
 const zod = require("zod")
-const { default: mongoose } = require("mongoose")
+const  mongoose = require("mongoose")
 
 const router = express.Router()
 
@@ -12,13 +12,14 @@ const transferBody = zod.object({
 })
 
 router.get("/balance", isAuthorized, async ( req, res ) => {
-    const account = Account.findOne({ userId: req.userId})
+    console.log("hit")
+    const account = await Account.findOne({ userId: req.userId})
     res.status(200).json({
         balance: account.balance
     })
 })
 
-router.post("/tranfer", isAuthorized, async ( req, res ) => {
+router.post("/transfer", isAuthorized, async ( req, res ) => {
     const success = transferBody.safeParse(req.body)
     if (!success) {
         return res.status(411).json({
@@ -28,7 +29,7 @@ router.post("/tranfer", isAuthorized, async ( req, res ) => {
     const session = await mongoose.startSession()
     session.startTransaction()
     const { amount, to } = req.body;
-    const account = Account.findOne({ userId: req.userId}).session(session)
+    const account = await Account.findOne({ userId: req.userId}).session(session)
     
     if (!account || account.balance < amount) {
         await session.abortTransaction()
@@ -36,7 +37,7 @@ router.post("/tranfer", isAuthorized, async ( req, res ) => {
             message: "Insufficient funds."
         })
     }
-    const toAccount = Account.findOne({userId: to}).session(session)
+    const toAccount = await Account.findOne({userId: to}).session(session)
 
     if (!toAccount) {
         await session.abortTransaction()
@@ -45,7 +46,7 @@ router.post("/tranfer", isAuthorized, async ( req, res ) => {
         })
     }
 
-    await Account.updateOne({userId: account},{
+    await Account.updateOne({userId: req.userId},{
         $inc : { 
             balance: -amount
         }
@@ -57,7 +58,7 @@ router.post("/tranfer", isAuthorized, async ( req, res ) => {
         }
     }).session(session)
 
-    session.commitTransaction()
+    await session.commitTransaction()
 
     res.status(200).json({
         message: "Transaction successful."
