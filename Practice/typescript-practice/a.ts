@@ -1,12 +1,6 @@
-enum Direction {
-  Up,
-  Down,
-  Left,
-  Right
+function getFirstElement<T>(arr: T[]) {
+  return arr[0];
 }
 
-function doSomething(keyPressed: Direction) {
-// do something.
-}
-
-doSomething(Direction.Up)
+const el = getFirstElement(["harkiratSingh", "ramanSingh"]);
+console.log(el.toLowerCase())
