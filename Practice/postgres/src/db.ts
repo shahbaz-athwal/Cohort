@@ -23,8 +23,8 @@ async function insertUser() {
     
     try {
         await client.connect()
-        const query = `INSERT INTO users (username, email, password) VALUES ('shahbaz', 'shahbaz@gmail.com', '123456789');`
-        const res = await client.query(query)
+        const query = `INSERT INTO users (username, email, password) VALUES ($1, $2, $3);`
+        const res = await client.query(query, ["Mantaj" ," mantaj@gmail.com", "123456789" ])
         console.log(res)
     } catch (error) {
         console.log(error)
