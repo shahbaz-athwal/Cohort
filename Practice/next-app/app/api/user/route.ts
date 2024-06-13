@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const client = new PrismaClient()
+
 export async function POST(req: NextRequest) {
     const body = await req.json();
     // should add zod validation here
@@ -16,3 +17,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Signed up" });
 }
+
+export async function GET() {
+    return Response.json({ username: "harkirat", email: "harkirat@gmail.com" })
+  }
+
